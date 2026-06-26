@@ -1,6 +1,9 @@
 # 🌊 InkWave — Premium Anime & Streetwear Design Marketplace
 
 InkWave is a premium, high-fidelity digital marketplace tailored for anime-inspired streetwear vector designs. Built for print-on-demand (POD) brands, Etsy merchant shops, and apparel designers, InkWave offers an interactive catalog of print-ready vector files (PNG, SVG, AI, EPS, PDF) with fully functional creator and administrative ecosystems.
+web link:https://ink-wave-anime-designs-hub.vercel.app/
+
+<img width="1266" height="4429" alt="Body" src="https://github.com/user-attachments/assets/1eb084ce-4667-4318-bf6b-8c3424e990f5" />
 
 ---
 
