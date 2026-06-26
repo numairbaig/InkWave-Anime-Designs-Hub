@@ -1,0 +1,113 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Graphic assets / product available on InkWave",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "tags": { "type": "array" },
+        "price": { "type": "number" },
+        "downloads": { "type": "integer" },
+        "likes": { "type": "integer" },
+        "rating": { "type": "number" },
+        "reviewsCount": { "type": "integer" },
+        "imageKey": { "type": "string" },
+        "creatorId": { "type": "string" },
+        "creatorName": { "type": "string" },
+        "description": { "type": "string" },
+        "fileFormats": { "type": "array" },
+        "includedFiles": { "type": "array" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "category", "price", "creatorId", "creatorName"]
+    },
+    "Creator": {
+      "title": "Creator",
+      "description": "Designers / creators on InkWave",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "username": { "type": "string" },
+        "avatarUrl": { "type": "string" },
+        "designsCount": { "type": "integer" },
+        "followers": { "type": "integer" },
+        "sales": { "type": "integer" },
+        "bio": { "type": "string" },
+        "verified": { "type": "boolean" }
+      },
+      "required": ["id", "name", "username", "verified"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Information about a user, including their account type",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "PlatformConfig": {
+      "title": "PlatformConfig",
+      "description": "System-wide settings and feature flags managed by operations staff",
+      "type": "object",
+      "properties": {
+        "maintenanceMode": { "type": "boolean" },
+        "disableRegistrations": { "type": "boolean" },
+        "commissionFee": { "type": "number" },
+        "featuredBannerText": { "type": "string" },
+        "announcementSub": { "type": "string" },
+        "allowInstantFreeDownloads": { "type": "boolean" }
+      },
+      "required": ["maintenanceMode", "disableRegistrations", "commissionFee"]
+    },
+    "AffiliateApplication": {
+      "title": "AffiliateApplication",
+      "description": "Information about an ambassador or affiliate applicant",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string" },
+        "platform": { "type": "string" },
+        "handle": { "type": "string" },
+        "followerCount": { "type": "string" },
+        "motivation": { "type": "string" },
+        "promoCode": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "fullName", "email", "platform", "handle", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "products": {
+      "schema": "Product",
+      "description": "InkWave digital products"
+    },
+    "creators": {
+      "schema": "Creator",
+      "description": "InkWave graphic creators/designers"
+    },
+    "users": {
+      "schema": "UserProfile",
+      "description": "Registered user accounts and roles"
+    },
+    "settings": {
+      "schema": "PlatformConfig",
+      "description": "Platform settings and configuration documents"
+    },
+    "affiliate_applications": {
+      "schema": "AffiliateApplication",
+      "description": "Submissions for the InkWave Ambassador affiliate program"
+    }
+  }
+}

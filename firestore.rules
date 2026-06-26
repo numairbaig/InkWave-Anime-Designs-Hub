@@ -1,0 +1,87 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net: Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Primitive Helpers
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidProduct(data) {
+      return data.keys().hasAll(['id', 'title', 'category', 'price', 'creatorId', 'creatorName'])
+        && data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() <= 200
+        && data.category is string && data.category.size() <= 100
+        && data.price is number
+        && data.creatorId is string && data.creatorId.size() <= 128
+        && data.creatorName is string && data.creatorName.size() <= 100;
+    }
+
+    function isValidCreator(data) {
+      return data.keys().hasAll(['id', 'name', 'username', 'verified'])
+        && data.id is string && data.id.size() <= 128
+        && data.name is string && data.name.size() <= 100
+        && data.username is string && data.username.size() <= 100
+        && data.verified is bool;
+    }
+
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['uid', 'email', 'role'])
+        && data.uid is string && data.uid.size() <= 128
+        && data.email is string && data.email.size() <= 150
+        && data.role is string && (data.role == 'buyer' || data.role == 'creator' || data.role == 'admin');
+    }
+
+    function isValidAffiliateApplication(data) {
+      return data.keys().hasAll(['id', 'userId', 'fullName', 'email', 'platform', 'handle', 'status', 'createdAt'])
+        && data.id is string && data.id.size() <= 128
+        && data.userId is string && data.userId.size() <= 128
+        && data.fullName is string && data.fullName.size() <= 150
+        && data.email is string && data.email.size() <= 150
+        && data.platform is string && data.platform.size() <= 50
+        && data.handle is string && data.handle.size() <= 100
+        && data.status is string && (data.status == 'pending' || data.status == 'approved' || data.status == 'rejected')
+        && data.createdAt is string;
+    }
+
+    // Products Collection rules
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update: if isValidId(productId) && isValidProduct(request.resource.data);
+      allow delete: if isValidId(productId);
+    }
+
+    // Creators Collection rules
+    match /creators/{creatorId} {
+      allow read: if true;
+      allow create, update: if isValidId(creatorId) && isValidCreator(request.resource.data);
+      allow delete: if isValidId(creatorId);
+    }
+
+    // UserProfiles Collection rules
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update: if request.auth != null && request.auth.uid == userId && isValidUserProfile(request.resource.data);
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Settings Collection rules
+    match /settings/{settingsId} {
+      allow get, list: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Affiliate Applications Collection rules
+    match /affiliate_applications/{applicationId} {
+      allow get, list: if true;
+      allow create: if isValidId(applicationId) && isValidAffiliateApplication(request.resource.data);
+      allow update, delete: if true;
+    }
+
+  }
+}
