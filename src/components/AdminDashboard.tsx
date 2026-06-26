@@ -78,7 +78,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [newTitle, setNewTitle] = useState('');
   const [newCategory, setNewCategory] = useState('one-piece');
   const [newPrice, setNewPrice] = useState('29.00');
-  const [newImageKey, setNewImageKey] = useState('samurai_crimson');
+  const [newImageKey, setNewImageKey] = useState('');
+  const [uploadedFileName, setUploadedFileName] = useState('');
   const [newTags, setNewTags] = useState('streetwear, vector, anime');
   const [newDescription, setNewDescription] = useState('Premium high-quality vector print ready for oversizes.');
 
@@ -318,6 +319,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       alert("Please enter a valid price.");
       return;
     }
+    if (!newImageKey) {
+      alert("Please upload a design media image.");
+      return;
+    }
 
     const newProd: Product = {
       id: `p-admin-${Date.now()}`,
@@ -345,6 +350,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setNewTitle('');
     setNewTags('streetwear, vector, anime');
     setNewDescription('Premium high-quality vector print ready for oversizes.');
+    setNewImageKey('');
+    setUploadedFileName('');
     setIsAddModalOpen(false);
     alert(`Curated design "${newTitle}" is now live on the storefront!`);
   };
@@ -1491,30 +1498,46 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="block text-[9px] uppercase font-bold text-neutral-500">Artwork Model Preview</label>
-                  <select
-                    value={newImageKey}
-                    onChange={(e) => setNewImageKey(e.target.value)}
-                    className="w-full px-2 py-2 border border-[#0d1400] rounded bg-white text-[#0d1400]"
-                  >
-                    <option value="samurai_crimson">Samurai Crimson Moon (Red/Black)</option>
-                    <option value="straw_hat_pirate">Straw Hat Pirate Skull (Ink Splatter)</option>
-                    <option value="oni_mech">Oni Mech Purple (Violent HUD)</option>
-                    <option value="cursed_eyes">Cursed King Eyes (Sukuna Lines)</option>
-                    <option value="chakra_seal">Chakra Stomach Seal (Orange/Black)</option>
-                    <option value="colossal_titan">Colossal Steam Giant (Woodblock print)</option>
-                    <option value="shinigami_apple">Death God Red Apple (Minimalist)</option>
-                    <option value="nichirin_wave">Nichirin Sword Wave (Blue Wave)</option>
-                    <option value="hollow_mask">Hollow Mask Red Paint (Graffiti)</option>
-                    <option value="power_level">Vaporwave HUD Power Scan (Green Radar)</option>
-                  </select>
+                  <label className="block text-[9px] uppercase font-bold text-neutral-500">Upload Design Media Image</label>
+                  <div className="relative border border-dashed border-[#0d1400] hover:bg-neutral-50 transition-colors rounded p-3 text-center cursor-pointer flex flex-col items-center justify-center min-h-[56px]">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      required={!newImageKey}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          if (!file.type.startsWith('image/')) {
+                            alert('Please upload an image file (PNG, JPG, JPEG, or SVG).');
+                            return;
+                          }
+                          setUploadedFileName(file.name);
+                          const reader = new FileReader();
+                          reader.onload = (event) => {
+                            if (event.target?.result && typeof event.target.result === 'string') {
+                              setNewImageKey(event.target.result);
+                            }
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                    <span className="text-[10px] text-neutral-500 font-mono">
+                      {uploadedFileName ? `✓ ${uploadedFileName}` : 'Select or Drop Image File'}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Visual Thumbnail of selected artwork key */}
                 <div className="border border-[#0d1400] bg-neutral-50 rounded flex items-center justify-center p-2 h-14 overflow-hidden">
-                  <DesignRenderer imageKey={newImageKey} className="h-full object-contain" />
+                  {newImageKey ? (
+                    <DesignRenderer imageKey={newImageKey} className="h-full object-contain" />
+                  ) : (
+                    <span className="text-[9px] text-neutral-400 font-mono">No Image Uploaded</span>
+                  )}
                 </div>
               </div>
 
