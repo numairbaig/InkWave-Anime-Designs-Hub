@@ -15,18 +15,27 @@ export const Categories: React.FC<CategoriesProps> = ({
   selectedCategory,
   products
 }) => {
-  // Get 4 distinct product imageKeys for a category to populate the 2x2 grid
-  const getCategoryPreviews = (tag: string) => {
-    const matched = products.filter((p) => p.category === tag || p.tags.includes(tag));
-    // Default fallback imageKeys if fewer than 4 items match
-    const defaultKeys = ['samurai_crimson', 'straw_hat_pirate', 'oni_mech', 'cursed_eyes'];
-    const previews = matched.map((p) => p.imageKey);
-    
-    // Fill up to 4 elements
-    while (previews.length < 4) {
-      previews.push(defaultKeys[previews.length % defaultKeys.length]);
+  const getCategoryCover = (tag: string) => {
+    switch (tag) {
+      case 'Jujutsu Kaisen':
+        return '/assets/jujutsu_kaisen_cover.jpg';
+      case 'Death Note':
+        return '/assets/death_note_cover.jpg';
+      case 'Demon Slayer':
+        return '/assets/demon_slayer_cover.jpg';
+      case 'Dragon Ball':
+        return '/assets/dragon_ball_cover.jpg';
+      case 'Bleach':
+        return '/assets/bleach_cover.jpg';
+      case 'Attack on Titan':
+        return '/assets/attack_on_titan_cover.jpg';
+      case 'Naruto':
+        return '/assets/naruto_cover.jpg';
+      case 'One Piece':
+        return '/assets/one_piece_cover.jpg';
+      default:
+        return '/assets/one_piece_cover.jpg';
     }
-    return previews.slice(0, 4);
   };
 
   return (
@@ -52,8 +61,8 @@ export const Categories: React.FC<CategoriesProps> = ({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {CATEGORIES_LIST.map((cat) => {
-          const previews = getCategoryPreviews(cat.tag);
           const isSelected = selectedCategory === cat.tag;
+          const coverImage = getCategoryCover(cat.tag);
 
           return (
             <div
@@ -65,15 +74,15 @@ export const Categories: React.FC<CategoriesProps> = ({
                 backgroundColor: isSelected ? '#ffffff' : cat.color
               }}
             >
-              {/* 2x2 Design Preview Grid */}
-              <div className="grid grid-cols-2 gap-2 aspect-square w-full border border-[#0d1400] bg-white p-3 rounded-[8px] overflow-hidden">
-                {previews.map((imageKey, idx) => (
-                  <div key={idx} className="aspect-square bg-neutral-50 p-1 flex items-center justify-center border border-neutral-100 overflow-hidden rounded-[4px]">
-                    <div className="w-full h-full transform transition-transform duration-500 group-hover:scale-105">
-                      <DesignRenderer imageKey={imageKey} className="w-full h-full object-contain" />
-                    </div>
-                  </div>
-                ))}
+              {/* Category Cover Image */}
+              <div className="aspect-square w-full border border-[#0d1400] bg-white rounded-[8px] overflow-hidden">
+                <div className="w-full h-full transform transition-transform duration-500 group-hover:scale-105">
+                  <img
+                    src={coverImage}
+                    alt={cat.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               </div>
 
               {/* Title & Count */}
